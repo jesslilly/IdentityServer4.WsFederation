@@ -1,0 +1,27 @@
+name: CI
+
+on: [push]
+  branches:
+    - netcoreapp2.0
+    - release/*
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: restore package dependencies
+      run: dotnet restore *.sln
+    - name: build package
+      run: dotnet build --no-restore *.sln
+    - name: test package
+      run: dotnet test --no-build --no-restore *.sln
+    - name: pack package
+      run: dotnet pack --no-build --no-restore --output dist -p:-p:PackageId=IdentityServer4.WsFederation -p:PackageVersion=2.4.0 \
+           src/IdentityServer4.WsFederation/IdentityServer4.WsFederation.csproj
+    - name: Run a multi-line script
+      run: |
+        ls -al dist/
+        echo test, and deploy your project.
