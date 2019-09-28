@@ -18,11 +18,11 @@ jobs:
       with:
         dotnet-version: '2.2.402' # SDK Version to use.
     - name: restore package dependencies
-      run: dotnet restore *.sln
+      run: dotnet restore src/IdentityServer4.WsFederation/IdentityServer4.WsFederation.csproj
     - name: build package
-      run: dotnet build --no-restore *.sln
+      run: dotnet build --no-restore src/IdentityServer4.WsFederation/IdentityServer4.WsFederation.csproj
     - name: test package
-      run: dotnet test --no-build --no-restore *.sln
+      run: dotnet test --no-build --no-restore src/IdentityServer4.WsFederation/IdentityServer4.WsFederation.csproj
     - name: pack package
       run: dotnet pack --no-build --no-restore --output dist -p:-p:PackageId=IdentityServer4.WsFederation -p:PackageVersion=2.4.0 \
            src/IdentityServer4.WsFederation/IdentityServer4.WsFederation.csproj
