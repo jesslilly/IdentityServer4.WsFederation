@@ -5,6 +5,7 @@ on:
     branches:
       - netcoreapp2.0
       - release/*
+      - build
 
 jobs:
   build:
