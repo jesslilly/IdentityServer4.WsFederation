@@ -28,11 +28,11 @@ jobs:
         dotnet pack 
         --no-build 
         --no-restore 
-        --output ./dist 
+        --output $GITHUB_WORKSPACE/dist 
         -p:PackageId=IdentityServer4.WsFederation 
         -p:PackageVersion=2.4.0
         src/IdentityServer4.WsFederation/IdentityServer4.WsFederation.csproj
     - name: Run a multi-line script
       run: |
-        ls -al ./dist
+        ls -al $GITHUB_WORKSPACE/dist
         echo test, and deploy your project.
