@@ -5,7 +5,6 @@ on:
     branches:
       - netcoreapp2.0
       - release/*
-      - build
 
 jobs:
   build:
@@ -31,7 +30,3 @@ jobs:
         -p:PackageId=IdentityServer4.WsFederation 
         -p:PackageVersion=2.4.0
         src/IdentityServer4.WsFederation/IdentityServer4.WsFederation.csproj
-    - name: Run a multi-line script
-      run: |
-        ls -al $GITHUB_WORKSPACE/dist
-        echo test, and deploy your project.
