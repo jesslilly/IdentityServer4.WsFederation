@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    tags:
+      - '*'
+
+env:
+  PROJECT_FILE: src/IdentityServer4.WsFederation/IdentityServer4.WsFederation.csproj
+  RELEASE_PACKAGE_ID: Kowalew.IdentityServer4.WsFederation
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '2.2.402' # SDK Version to use.
+    - name: restore package dependencies
+      run: dotnet restore ${{env.PROJECT_FILE}}
+    - name: build package
+      run: dotnet build --no-restore ${{env.PROJECT_FILE}}
+    - name: test package
+      run: dotnet test --no-build --no-restore ${{env.PROJECT_FILE}}
+    - name: get release version
+      id: get_release_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+    - name: pack package
+      run: >
+        dotnet pack 
+        --no-build 
+        --no-restore 
+        --output $GITHUB_WORKSPACE/dist 
+        -p:PackageId=${{env.RELEASE_PACKAGE_ID}}
+        -p:PackageVersion=${{steps.get_release_version.outputs.VERSION}}
+        ${{env.PROJECT_FILE}}
+    - name: upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{env.RELEASE_PACKAGE_ID}}-v${{steps.get_release_version.outputs.VERSION}}
+        path: ./dist/*.nupkg
