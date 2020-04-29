@@ -7,7 +7,7 @@ on:
 
 env:
   PROJECT_FILE: src/IdentityServer4.WsFederation/IdentityServer4.WsFederation.csproj
-  RELEASE_PACKAGE_ID: IdentityServer4.WsFederation
+  RELEASE_PACKAGE_ID: Kowalew.IdentityServer4.WsFederation
 
 jobs:
   build:
