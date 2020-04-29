@@ -8,7 +8,6 @@ on:
 env:
   PROJECT_FILE: src/IdentityServer4.WsFederation/IdentityServer4.WsFederation.csproj
   RELEASE_PACKAGE_ID: IdentityServer4.WsFederation
-  RELEASE_VERSION: 2.4.0
 
 jobs:
   build:
@@ -25,6 +24,9 @@ jobs:
       run: dotnet build --no-restore ${{env.PROJECT_FILE}}
     - name: test package
       run: dotnet test --no-build --no-restore ${{env.PROJECT_FILE}}
+    - name: get release version
+      id: get_release_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
     - name: pack package
       run: >
         dotnet pack 
@@ -32,12 +34,10 @@ jobs:
         --no-restore 
         --output $GITHUB_WORKSPACE/dist 
         -p:PackageId=${{env.RELEASE_PACKAGE_ID}}
-        -p:PackageVersion=${{env.RELEASE_VERSION}}
+        -p:PackageVersion=${{steps.get_release_version.outputs.VERSION}}
         ${{env.PROJECT_FILE}}
-    - name: Upload a NuGet package
+    - name: upload artifact
       uses: actions/upload-artifact@v2
       with:
-        # Artifact name
-        name: ${{env.RELEASE_PACKAGE_ID}}-v${{env.RELEASE_VERSION}}
-        # A file, directory or wildcard pattern that describes what to upload
+        name: ${{env.RELEASE_PACKAGE_ID}}-v${{steps.get_release_version.outputs.VERSION}}
         path: ./dist/*.nupkg
