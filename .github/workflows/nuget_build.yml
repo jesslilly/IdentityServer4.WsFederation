@@ -40,4 +40,4 @@ jobs:
         # Artifact name
         name: ${{env.RELEASE_PACKAGE_ID}}-v${{env.RELEASE_VERSION}}
         # A file, directory or wildcard pattern that describes what to upload
-        path: $GITHUB_WORKSPACE/dist/*.nupkg
+        path: ./dist/*.nupkg
