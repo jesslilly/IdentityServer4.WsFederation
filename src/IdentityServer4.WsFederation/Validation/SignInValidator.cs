@@ -156,14 +156,15 @@ namespace IdentityServer4.WsFederation.Validation
 
         private void LogSuccess(SignInValidationResult result)
         {
-            var log = JsonConvert.SerializeObject(result, Formatting.Indented);
-            _logger.LogInformation("End WS-Federation signin request validation\n{0}", log.ToString());
+            // If you uncomment this, it will probably just fail b/c of https://github.com/JamesNK/Newtonsoft.Json/issues/1713
+            //var log = JsonConvert.SerializeObject(result, Formatting.Indented);
+            //_logger.LogInformation("End WS-Federation signin request validation\n{0}", log.ToString());
         }
 
         private void LogError(string message, SignInValidationResult result)
         {
-            var log = JsonConvert.SerializeObject(result, Formatting.Indented);
-            _logger.LogError("{0}\n{1}", message, log.ToString());
+            //var log = JsonConvert.SerializeObject(result, Formatting.Indented);
+            //_logger.LogError("{0}\n{1}", message, log.ToString());
         }
     }
 }
