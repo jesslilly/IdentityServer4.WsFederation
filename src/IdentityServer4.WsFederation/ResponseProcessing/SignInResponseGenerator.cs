@@ -82,7 +82,16 @@ namespace IdentityServer4.WsFederation
                 Subject = result.User,
                 RequestedClaimTypes = requestedClaimTypes,
                 Client = result.Client,
-                Caller = "WS-Federation"
+                Caller = "WS-Federation",
+                // VIM-132 I'm not sure if this is correct, but this is required by our implementation of GetProfileDataAsync.
+                RequestedResources = new Resources
+                {
+                    IdentityResources = new List<IdentityResource>
+                    {
+                        new IdentityResources.Profile(),
+                        new IdentityResources.Email()
+                    }
+                }
             };
 
             await _profile.GetProfileDataAsync(ctx);

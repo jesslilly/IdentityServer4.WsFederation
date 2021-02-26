@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Protocols.WsFederation;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication;
 using IdentityServer4.Services;
+using Newtonsoft.Json;
 
 namespace IdentityServer4.WsFederation.Validation
 {
@@ -115,14 +116,14 @@ namespace IdentityServer4.WsFederation.Validation
 
         private void LogSuccess(SignOutValidationResult result)
         {
-            // var log = JsonConvert.SerializeObject(result, Formatting.Indented);
-            // _logger.LogInformation("End WS-Federation signin request validation\n{0}", log.ToString());
+            var log = JsonConvert.SerializeObject(result, Formatting.Indented);
+            _logger.LogInformation("End WS-Federation signin request validation\n{0}", log.ToString());
         }
 
         private void LogError(string message, SignOutValidationResult result)
         {
-            // var log = JsonConvert.SerializeObject(result, Formatting.Indented);
-            // _logger.LogError("{0}\n{1}", message, log.ToString());
+            var log = JsonConvert.SerializeObject(result, Formatting.Indented);
+            _logger.LogError("{0}\n{1}", message, log.ToString());
         }
     }
 }
