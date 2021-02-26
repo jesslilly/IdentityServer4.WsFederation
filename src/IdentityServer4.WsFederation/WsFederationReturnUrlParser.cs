@@ -10,8 +10,6 @@ using IdentityServer4.Extensions;
 using Microsoft.Extensions.Logging;
 using IdentityServer4.WsFederation.Validation;
 using Microsoft.AspNetCore.Http;
-using System.Net;
-using Microsoft.IdentityModel.Protocols.WsFederation;
 
 namespace IdentityServer4.WsFederation
 {
@@ -38,7 +36,7 @@ namespace IdentityServer4.WsFederation
         {
             if (returnUrl.IsLocalUrl())
             {
-                var message = GetSignInRequestMessage(returnUrl);
+                var message = WsFederationMessageParser.GetSignInRequestMessage(returnUrl);
                 if (message != null) return true;
 
                 _logger.LogTrace("not a valid WS-Federation return URL");
@@ -52,7 +50,7 @@ namespace IdentityServer4.WsFederation
         {
             var user = await _userSession.GetUserAsync();
 
-            var signInMessage = GetSignInRequestMessage(returnUrl);
+            var signInMessage = WsFederationMessageParser.GetSignInRequestMessage(returnUrl);
             if (signInMessage == null) return null;
 
             // call validator
@@ -73,15 +71,6 @@ namespace IdentityServer4.WsFederation
             }
 
             return request;
-        }
-
-        private WsFederationMessage GetSignInRequestMessage(string returnUrl)
-        {
-            var decoded = WebUtility.UrlDecode(returnUrl);
-            WsFederationMessage message = WsFederationMessage.FromQueryString(decoded);
-            if (message.IsSignInMessage)
-                return message;
-            return null;
         }
     }
 }
