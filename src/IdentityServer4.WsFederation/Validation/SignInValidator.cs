@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System;
 using IdentityServer4.Stores;
 using System.Linq;
 using System.Security.Claims;
@@ -75,6 +76,15 @@ namespace IdentityServer4.WsFederation.Validation
                     Error = "invalid_relying_party"
                 };
             }
+            if (client.RedirectUris.Any(x => x.StartsWith("http:")))
+            {
+                LogError("Bad ClientRedirectUris setup.  You must use https.", result);
+
+                return new SignInValidationResult
+                {
+                    Error = "invalid_relying_party"
+                };
+            }
 
             result.Client = client;
             result.ReplyUrl = client.RedirectUris.First();
@@ -91,6 +101,21 @@ namespace IdentityServer4.WsFederation.Validation
                     SamlNameIdentifierFormat = _options.DefaultSamlNameIdentifierFormat,
                     ClaimMapping = _options.DefaultClaimMapping
                 };
+            }
+
+            if (rp.TokenType == WsFederationConstants.TokenTypes.Saml11TokenProfile11
+                && !Uri.TryCreate(client.ClientId, UriKind.Absolute, out _))
+            {
+                // The Client ID (wtrealm) must be a valid URI in http or urn scheme.
+                // The Client ID is copied to the Audience and SamlSecurityTokenHandler.CreateToken expects a valid Uri.
+                // https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/blob/dev/src/Microsoft.IdentityModel.Tokens.Saml/Saml/SamlSecurityTokenHandler.cs#L393
+                // This is not an issue for SAML 2.0 tokens (for some reason)
+                LogError($"Client ID {client.ClientId} must be a valid URI if using SAML 1.1 tokens.", result);
+
+                return new SignInValidationResult
+                {
+                    Error = "invalid_relying_party"
+                };  
             }
 
             result.RelyingParty = rp;
@@ -131,14 +156,14 @@ namespace IdentityServer4.WsFederation.Validation
 
         private void LogSuccess(SignInValidationResult result)
         {
-            // var log = JsonConvert.SerializeObject(result, Formatting.Indented);
-            // _logger.LogInformation("End WS-Federation signin request validation\n{0}", log.ToString());
+            var log = JsonConvert.SerializeObject(result, Formatting.Indented);
+            _logger.LogInformation("End WS-Federation signin request validation\n{0}", log.ToString());
         }
 
         private void LogError(string message, SignInValidationResult result)
         {
-            // var log = JsonConvert.SerializeObject(result, Formatting.Indented);
-            // _logger.LogError("{0}\n{1}", message, log.ToString());
+            var log = JsonConvert.SerializeObject(result, Formatting.Indented);
+            _logger.LogError("{0}\n{1}", message, log.ToString());
         }
     }
 }
