@@ -96,12 +96,12 @@ namespace IdentityServer4.WsFederation.Tests
             {
                 IssuerAddress = "/wsfederation",
                 Wtrealm = "urn:owinrp",
-                Wreply = "http://localhost:10313/",
+                Wreply = "https://localhost:10313/",
             };
             var signInUrl = wsMessage.CreateSignInUrl();
             var response = await _client.GetAsync(signInUrl);
             Assert.Equal(HttpStatusCode.Found, response.StatusCode);
-            var expectedLocation = "/Account/Login?ReturnUrl=%2Fwsfederation%3Fwtrealm%3Durn%253Aowinrp%26wreply%3Dhttp%253A%252F%252Flocalhost%253A10313%252F%26wa%3Dwsignin1.0";
+            var expectedLocation = "/Account/Login?ReturnUrl=%2Fwsfederation%3Fwtrealm%3Durn%253Aowinrp%26wreply%3Dhttps%253A%252F%252Flocalhost%253A10313%252F%26wa%3Dwsignin1.0";
             Assert.Equal(expectedLocation, response.Headers.Location.OriginalString);
         }
 
@@ -119,7 +119,7 @@ namespace IdentityServer4.WsFederation.Tests
                 Wa = "wsignin1.0",
                 IssuerAddress = "/wsfederation",
                 Wtrealm = "urn:owinrp",
-                Wreply = "http://localhost:10313/",
+                Wreply = "https://localhost:10313/",
                 Wfresh = "0",
             };
             var signInUrl = wsMessage.CreateSignInUrl();
@@ -131,7 +131,7 @@ namespace IdentityServer4.WsFederation.Tests
             var response = await _client.SendAsync(request);
 
             Assert.Equal(HttpStatusCode.Found, response.StatusCode);
-            var expectedLocation = "/Account/Login?ReturnUrl=%2Fwsfederation%3Fwa%3Dwsignin1.0%26wtrealm%3Durn%253Aowinrp%26wreply%3Dhttp%253A%252F%252Flocalhost%253A10313%252F";
+            var expectedLocation = "/Account/Login?ReturnUrl=%2Fwsfederation%3Fwa%3Dwsignin1.0%26wtrealm%3Durn%253Aowinrp%26wreply%3Dhttps%253A%252F%252Flocalhost%253A10313%252F";
             Assert.Equal(expectedLocation, response.Headers.Location.OriginalString);
         }
 
@@ -152,7 +152,7 @@ namespace IdentityServer4.WsFederation.Tests
                 Wa = "wsignin1.0",
                 IssuerAddress = "/wsfederation",
                 Wtrealm = "urn:owinrp",
-                Wreply = "http://localhost:10313/",
+                Wreply = "https://localhost:10313/",
                 Wfresh = "0",
             };
             var uri = wsMessage.CreateSignInUrl();
@@ -186,7 +186,7 @@ namespace IdentityServer4.WsFederation.Tests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var contentAsText = await response.Content.ReadAsStringAsync();
             Assert.NotEqual(String.Empty, contentAsText);
-            Assert.Contains("action=\"http://localhost:10313/\"", contentAsText);
+            Assert.Contains("action=\"https://localhost:10313/\"", contentAsText);
 
             // extract wreturn to use it later to check if our token is a valid token
             var wreturn = ExtractInBetween(contentAsText, "wresult\" value=\"", "\"");
@@ -220,7 +220,7 @@ namespace IdentityServer4.WsFederation.Tests
                 Wa = "wsignin1.0",
                 IssuerAddress = "/wsfederation",
                 Wtrealm = "urn:owinrp",
-                Wreply = "http://localhost:10313/",
+                Wreply = "https://localhost:10313/",
                 Wfresh = "5",
             };
             var signInUrl = wsMessage.CreateSignInUrl();
@@ -234,7 +234,7 @@ namespace IdentityServer4.WsFederation.Tests
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             var contentAsText = await response.Content.ReadAsStringAsync();
             Assert.NotEqual(String.Empty, contentAsText);
-            Assert.Contains("action=\"http://localhost:10313/\"", contentAsText);
+            Assert.Contains("action=\"https://localhost:10313/\"", contentAsText);
 
             // extract wreturn to use it later to check if our token is a valid token
             var wreturn = ExtractInBetween(contentAsText, "wresult\" value=\"", "\"");
@@ -268,7 +268,7 @@ namespace IdentityServer4.WsFederation.Tests
                 Wa = "wsignin1.0",
                 IssuerAddress = "/wsfederation",
                 Wtrealm = "urn:owinrp",
-                Wreply = "http://localhost:10313/",
+                Wreply = "https://localhost:10313/",
             };
             var signInUrl = wsSignInMessage.CreateSignInUrl();
             var request = new HttpRequestMessage(HttpMethod.Get, signInUrl);
@@ -282,7 +282,7 @@ namespace IdentityServer4.WsFederation.Tests
             Assert.Equal(HttpStatusCode.OK, wsResponse.StatusCode);
             var contentAsText = await wsResponse.Content.ReadAsStringAsync();
             Assert.NotEqual(String.Empty, contentAsText);
-            Assert.Contains("action=\"http://localhost:10313/\"", contentAsText);
+            Assert.Contains("action=\"https://localhost:10313/\"", contentAsText);
             // extract wreturn to use it later to check if our token is a valid token
             var wreturn = ExtractInBetween(contentAsText, "wresult\" value=\"", "\"");
             Assert.False(wreturn.StartsWith("%EF%BB%BF")); //don't start with BOM (Byte Order Mark)
@@ -318,7 +318,7 @@ namespace IdentityServer4.WsFederation.Tests
                 Wa = "wsignout1.0",
                 IssuerAddress = "/wsfederation",
                 // Wtrealm = "urn:owinrp",
-                Wreply = "http://localhost:10313/",
+                Wreply = "https://localhost:10313/",
             };
             var signOutUrl = wsMessage.CreateSignOutUrl();
             var request = new HttpRequestMessage(HttpMethod.Get, signOutUrl);
