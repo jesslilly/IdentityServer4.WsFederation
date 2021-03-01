@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using Microsoft.IdentityModel.Protocols.WsFederation;
 
 namespace IdentityServer4.WsFederation
@@ -8,11 +9,9 @@ namespace IdentityServer4.WsFederation
         public static WsFederationMessage GetSignInRequestMessage(string encodedUrl)
         {
             var decodedUrl = WebUtility.UrlDecode(encodedUrl);
-
-            if (!decodedUrl.Contains("?")) return null;
-            var query = decodedUrl.Split(new[] { '?' }, 2)[1];
-
-            WsFederationMessage message = WsFederationMessage.FromQueryString(query);
+            // Fix: Add dummy.com host so Uri can properly parse out the query string.
+            var uri = new Uri("https://dummy.com" + decodedUrl);
+            WsFederationMessage message = WsFederationMessage.FromUri(uri);;
             if (message.IsSignInMessage)
                 return message;
             return null;
